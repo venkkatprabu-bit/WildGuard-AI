@@ -1,0 +1,31 @@
+
+# Node.js dependencies
+node_modules/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Angular build output
+dist/
+.angular/
+coverage/
+
+# Local datasets
+datasets/
+
+# Satellite raster files and archives
+*.tif
+*.tiff
+*.zip
+
+# Editor and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
