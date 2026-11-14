@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/db.js";
 import fireRoutes from "./routes/fireRoutes.js";
+import weatherRoutes from "./routes/weatherRoutes.js";
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.get("/api/db-test", async (req, res) => {
 });
 
 app.use("/api/fires", fireRoutes);
+app.use("/api/weather", weatherRoutes);
 
 app.listen(PORT, () => {
   console.log(`WildGuard AI server running on port ${PORT}`);
