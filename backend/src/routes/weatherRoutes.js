@@ -1,6 +1,9 @@
 
 import { Router } from "express";
 import pool from "../config/db.js";
+import { getCurrentWeather } from "../services/weatherService.js";
+
+
 
 const router = Router();
 
@@ -56,5 +59,57 @@ router.get("/bandipur", async (req, res) => {
     });
   }
 });
+
+
+// GET /api/weather/current?lat=11.6644&lon=76.628
+
+router.get("/current", async (req, res) => {
+  try {
+    const { lat, lon } = req.query;
+
+    if (lat === undefined || lon === undefined ||
+        lat === "" || lon === "") {
+      return res.status(400).json({
+        success: false,
+        message: "Latitude and longitude are required"
+      });
+    }
+
+    const latitude = Number(lat);
+    const longitude = Number(lon);
+
+    if (
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude) ||
+      latitude < -90 || latitude > 90 ||
+      longitude < -180 || longitude > 180
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid latitude or longitude"
+      });
+    }
+
+    const weather = await getCurrentWeather(
+      latitude,
+      longitude
+    );
+
+    res.json({
+      success: true,
+      data: weather
+    });
+
+  } catch (error) {
+    console.error("Current weather error:", error);
+
+    res.status(502).json({
+      success: false,
+      message: "Unable to retrieve current weather"
+    });
+  }
+});
+
+
 
 export default router;
