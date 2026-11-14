@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import pool from "./config/db.js";
 import fireRoutes from "./routes/fireRoutes.js";
 import weatherRoutes from "./routes/weatherRoutes.js";
+import vegetationRoutes from "./routes/vegetationRoutes.js";
+import riskRoutes from "./routes/riskRoutes.js";
 
 dotenv.config();
 
@@ -49,6 +51,9 @@ app.get("/api/db-test", async (req, res) => {
 
 app.use("/api/fires", fireRoutes);
 app.use("/api/weather", weatherRoutes);
+app.use("/api/vegetation", vegetationRoutes);
+app.use("/api/risk", riskRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`WildGuard AI server running on port ${PORT}`);
