@@ -60,6 +60,9 @@ router.get("/", async (req, res) => {
 router.get("/live", async (req, res) => {
   try {
     const { lat, lon, at } = req.query;
+    if (typeof lat !== "string" || typeof lon !== "string" || !lat.trim() || !lon.trim() || (at != null && typeof at !== "string")) {
+      return res.status(400).json({ success: false, message: "Invalid coordinates or analysis timestamp" });
+    }
 
     if (lat == null || lon == null || lat === "" || lon === "") {
       return res.status(400).json({
@@ -105,11 +108,12 @@ router.get("/live", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Dynamic vegetation error:", error);
+    console.error("Dynamic vegetation error:", error.code || "UNEXPECTED_ERROR", error.status || 502);
 
     res.status(error.status || 502).json({
       success: false,
-      message: error.status === 404
+      code: error.code || "VEGETATION_UNAVAILABLE",
+      message: error.code?.startsWith("COPERNICUS_") || error.status === 400 || error.status === 404
         ? error.message
         : "Unable to retrieve Sentinel-2 vegetation data"
     });

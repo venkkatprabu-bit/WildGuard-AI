@@ -5,6 +5,10 @@ import { getHistoricalWeather } from "../services/historicalWeatherService.js";
 import { assessHotspotRisk } from "../services/dynamicRiskService.js";
 import { generateSpreadSimulation } from "../services/spreadSimulationService.js";
 
+import { analyzeFireExposure } from "../services/exposureService.js";
+
+import { simulateResourceAllocation } from "../services/resourceAllocationService.js";
+
 const router = Router();
 
 // GET /api/fires
@@ -299,5 +303,32 @@ router.get("/:id/spread", async (req, res) => {
   }
 });
 
+
+// GET /api/fires/:id/exposure
+router.get("/:id/exposure", async (req, res) => {
+  try {
+    const data = await analyzeFireExposure(req.params.id, req.query);
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error("Infrastructure exposure error:", error.code || "", error.message);
+    const status = [400, 404, 422, 502, 503].includes(error.status) ? error.status : 500;
+    res.status(status).json({
+      success: false,
+      message: status === 500 ? "Infrastructure exposure analysis failed" : error.message
+    });
+  }
+});
+
+// GET /api/fires/:id/allocation — hypothetical selections; no reservation or dispatch.
+router.get("/:id/allocation", async (req, res) => {
+  try {
+    res.json({ success: true, data: await simulateResourceAllocation(req.params.id, req.query) });
+  } catch (error) {
+    console.error("Resource allocation simulation error:", error.code || error.status || "unexpected_error");
+    const status = [400,404,422].includes(error.status) ? error.status : 500;
+    res.status(status).json({ success: false,
+      message: status === 500 ? "Unable to simulate resource allocation" : error.message });
+  }
+});
 
 export default router;

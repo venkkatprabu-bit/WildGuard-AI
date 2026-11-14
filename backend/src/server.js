@@ -8,6 +8,8 @@ import weatherRoutes from "./routes/weatherRoutes.js";
 import vegetationRoutes from "./routes/vegetationRoutes.js";
 import riskRoutes from "./routes/riskRoutes.js";
 
+import resourceRoutes from "./routes/resourceRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -49,6 +51,7 @@ app.get("/api/db-test", async (req, res) => {
   }
 });
 
+app.use("/api/resources", resourceRoutes);
 app.use("/api/fires", fireRoutes);
 app.use("/api/weather", weatherRoutes);
 app.use("/api/vegetation", vegetationRoutes);
